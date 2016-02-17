@@ -40,6 +40,7 @@ public class RobotWindows {
 	//			a=Integer.valueOf(y[0])*6;
 	//			b=Integer.valueOf(y[1])*6;
 				
+				
 				a=Integer.valueOf(y[0]);
 				b=Integer.valueOf(y[1]);
 				
