@@ -17,40 +17,42 @@ public class WifiSocketServer implements Runnable {
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-
-
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(4444);
-            System.out.println(getIpAddress());
-            System.out.println("I'm waiting here: "
-					+ serverSocket.getLocalPort());
-        } catch (IOException e) {
-            System.err.println("Could not listen on port: 4444.");
-            System.exit(1);
-        }
-
-        Socket clientSocket = null;
-        try {
-            clientSocket = serverSocket.accept();
-            System.err.println("accept");
-        } catch (IOException e) {
-            System.err.println("Accept failed.");
-            System.exit(1);
-        }
-
-   
-        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+//
+//
+//        ServerSocket serverSocket = null;
+//        try {
+//            serverSocket = new ServerSocket(4444);
+//            System.out.println(getIpAddress());
+//            System.out.println("I'm waiting here: "
+//					+ serverSocket.getLocalPort());
+//        } catch (IOException e) {
+//            System.err.println("Could not listen on port: 4444.");
+//            System.exit(1);
+//        }
+//
+//        Socket clientSocket = null;
+//        try {
+//            clientSocket = serverSocket.accept();
+//            System.err.println("accept");
+//        } catch (IOException e) {
+//            System.err.println("Accept failed.");
+//            System.exit(1);
+//        }
+//
+//   
+//        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+//        
+//        String inputLine;
+//
+//        while ((inputLine = in.readLine()) != null) {
+//        	System.out.println(inputLine);
+//        }
+//
+//       in.close();
+//        clientSocket.close();
+//        serverSocket.close();
         
-        String inputLine;
-
-        while ((inputLine = in.readLine()) != null) {
-        	System.out.println(inputLine);
-        }
-
-       in.close();
-        clientSocket.close();
-        serverSocket.close();
+        
     }
     
 	 public void run() {
@@ -92,7 +94,8 @@ public class WifiSocketServer implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+	        
+	        (new Thread(new WifiSocketServer())).start();
 	    }
     
     public static String getIpAddress() {
