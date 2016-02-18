@@ -28,6 +28,7 @@ public class WifiClientService  {
 	            r = mConnectedThread;
 	        }
 	        // Perform the write unsynchronized
+	      
 	        r.write(out);
 	    }
 	/**
@@ -46,10 +47,13 @@ public class WifiClientService  {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (socket==null)
-			
+		
+//		if (socket==null)System.out.println("ERROR NULL socket");		
+//		if (mConnectedThread==null)System.out.println("ERROR NULL mConnectedThread");
+		
+		
 		 mConnectedThread = new ConnectedThread(socket);
-	  //   mConnectedThread.start();
+//	     mConnectedThread.start();
        
     }
 				

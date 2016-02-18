@@ -153,6 +153,7 @@ public class MainView extends Activity implements SensorEventListener {
 				int port = data.getExtras().getInt("port");			
 				// Attempt to connect to the device
 				wifiChatService.connect(adress,port);
+//				System.out.println("wifiChatService"+wifiChatService+" " +this);
 			}
 			break;
 		case REQUEST_ENABLE_BT:
@@ -414,7 +415,7 @@ public class MainView extends Activity implements SensorEventListener {
 		// Initialize the WIFIChatService to perform wifi connections
 
 		wifiChatService = new WifiClientService(this);
-		
+//		System.out.println("wifiChatService"+wifiChatService+" " +this);
 		// Initialize the buffer for outgoing messages
 		mOutStringBuffer = new StringBuffer("");
 	}
@@ -525,7 +526,6 @@ public class MainView extends Activity implements SensorEventListener {
 	@Override
 	protected synchronized void onPause() {
 		super.onPause();
-		sendMessage("EXIT\n");
 		System.out.println("ON PAUSE");
 		mSensorManager.unregisterListener(this);
 	}
@@ -533,7 +533,6 @@ public class MainView extends Activity implements SensorEventListener {
 	@Override
 	public void onStop() {
 		super.onStop();
-		sendMessage("EXIT\n");
 		System.out.println("ON STOP");
 		if (D)
 			Log.e(TAG, "-- ON STOP --");
@@ -546,35 +545,37 @@ public class MainView extends Activity implements SensorEventListener {
 		if(connectionType.equals("Bluethooth")){
 			// Stop the Bluetooth chat services		
 			System.out.println("TRY STOP ALL");
-			if (mChatService != null)
+			if (mChatService != null){
 				sendMessage("EXIT\n");
-				mChatService.stop();			
+				mChatService.stop();
+				}			
 		}else{
 			System.out.println("TRY STOP ALL WIFI");
-			if (wifiChatService != null)
+			if (wifiChatService != null){
 				sendMessage("EXIT\n");
+				}
 		}		
 	}
 
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-	    if (keyCode == KeyEvent.KEYCODE_BACK
-	            && event.getRepeatCount() == 0) {
-	        event.startTracking();
-	        return true;
-	    }
-	    return super.onKeyDown(keyCode, event);
-	}
-
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-	    if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
-	            && !event.isCanceled()) {
-	    	System.out.println("TRY STOP ALL WIFI");
-			if (wifiChatService != null)
-				sendMessage("EXIT\n");
-	        return true;
-	    }
-	    return super.onKeyUp(keyCode, event);
-	}
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//	    if (keyCode == KeyEvent.KEYCODE_BACK
+//	            && event.getRepeatCount() == 0) {
+//	        event.startTracking();
+//	        return true;
+//	    }
+//	    return super.onKeyDown(keyCode, event);
+//	}
+//
+//	public boolean onKeyUp(int keyCode, KeyEvent event) {
+//	    if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
+//	            && !event.isCanceled()) {
+//	    	System.out.println("TRY STOP ALL WIFI");
+//			if (wifiChatService != null)
+//				sendMessage("EXIT\n");
+//	        return true;
+//	    }
+//	    return super.onKeyUp(keyCode, event);
+//	}
 	
 	
 	@Override
