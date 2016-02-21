@@ -48,8 +48,8 @@ public class WifiClientService  {
 			e.printStackTrace();
 		}
 		
-//		if (socket==null)System.out.println("ERROR NULL socket");		
-//		if (mConnectedThread==null)System.out.println("ERROR NULL mConnectedThread");
+		if (socket==null)System.out.println("ERROR NULL socket");		
+		if (mConnectedThread==null)System.out.println("ERROR NULL mConnectedThread");
 		
 		
 		 mConnectedThread = new ConnectedThread(socket);

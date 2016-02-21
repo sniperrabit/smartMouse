@@ -272,7 +272,7 @@ public class MainView extends Activity implements SensorEventListener {
 			
 			// Reset out string buffer to zero and clear the edit text field
 			mOutStringBuffer.setLength(0);
-			mOutEditText.setText(mOutStringBuffer);
+			//mOutEditText.setText(mOutStringBuffer);
 		}
 	}
 
@@ -374,6 +374,7 @@ public class MainView extends Activity implements SensorEventListener {
 		// Initialize the buffer for outgoing messages
 		mOutStringBuffer = new StringBuffer("");
 	}
+	
 	private void setupWifi() {
 		// Initialize the array adapter for the conversation thread
 //		mConversationArrayAdapter = new ArrayAdapter<String>(this,

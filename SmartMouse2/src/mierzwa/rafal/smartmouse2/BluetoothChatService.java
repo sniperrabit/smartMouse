@@ -111,8 +111,8 @@ public class BluetoothChatService {
 
         // Start the thread to listen on a BluetoothServerSocket
         if (mAcceptThread == null) {
-            mAcceptThread = new AcceptThread();
-            mAcceptThread.start();
+           // mAcceptThread = new AcceptThread();
+            //mAcceptThread.start();
         }
         setState(STATE_LISTEN);
     }
@@ -144,27 +144,27 @@ public class BluetoothChatService {
      * @param device  The BluetoothDevice that has been connected
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
-        if (D) Log.d(TAG, "connected");
-
-        // Cancel the thread that completed the connection
-        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
-
-        // Cancel any thread currently running a connection
-        if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
-
-        // Cancel the accept thread because we only want to connect to one device
-        if (mAcceptThread != null) {mAcceptThread.cancel(); mAcceptThread = null;}
+//        if (D) Log.d(TAG, "connected");
+//
+//        // Cancel the thread that completed the connection
+//        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
+//
+//        // Cancel any thread currently running a connection
+//        if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
+//
+//        // Cancel the accept thread because we only want to connect to one device
+//        if (mAcceptThread != null) {mAcceptThread.cancel(); mAcceptThread = null;}
 
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(socket);
-        mConnectedThread.start();
+      //  mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(MainView.MESSAGE_DEVICE_NAME);
-        Bundle bundle = new Bundle();
-        bundle.putString(MainView.DEVICE_NAME, device.getName());
-        msg.setData(bundle);
-        mHandler.sendMessage(msg);
+//        Message msg = mHandler.obtainMessage(MainView.MESSAGE_DEVICE_NAME);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(MainView.DEVICE_NAME, device.getName());
+//        msg.setData(bundle);
+//        mHandler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
     }
@@ -339,9 +339,9 @@ public class BluetoothChatService {
         }
 
         public void run() {
-        	System.out.println("BEGIN mConnectThread");
+        //	System.out.println("BEGIN mConnectThread");
           
-            setName("ConnectThread");
+         //   setName("ConnectThread");
 
             // Always cancel discovery because it will slow down a connection
             mAdapter.cancelDiscovery();
@@ -357,18 +357,18 @@ public class BluetoothChatService {
                 try {
                     mmSocket.close();
                 } catch (IOException e2) {
-                	System.out.println("unable to close() socket during connection failure "+e2);
+         //       	System.out.println("unable to close() socket during connection failure "+e2);
                   
                 }
                 // Start the service over to restart listening mode
-                System.out.println("restart listening mode ");
-               BluetoothChatService.this.start();
+         //       System.out.println("restart listening mode ");
+        //       BluetoothChatService.this.start();
                 return;
             }
 
             // Reset the ConnectThread because we're done
             synchronized (BluetoothChatService.this) {
-            	System.out.println("Reset the ConnectThread because we're done");
+       //     	System.out.println("Reset the ConnectThread because we're done");
                 mConnectThread = null;
             }
 
