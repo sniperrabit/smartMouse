@@ -85,10 +85,13 @@ public class RobotWindows {
 	public void type(char character) {
         switch (character) {
         case 'a': doType(VK_A); break;
+        case 'ą': doType(VK_A); break;
         case 'b': doType(VK_B); break;
         case 'c': doType(VK_C); break;
+        case 'ć': doType(VK_C); break;
         case 'd': doType(VK_D); break;
         case 'e': doType(VK_E); break;
+        case 'ę': doType(VK_E); break;
         case 'f': doType(VK_F); break;
         case 'g': doType(VK_G); break;
         case 'h': doType(VK_H); break;
@@ -96,9 +99,11 @@ public class RobotWindows {
         case 'j': doType(VK_J); break;
         case 'k': doType(VK_K); break;
         case 'l': doType(VK_L); break;
+        case 'ł': doType(VK_L); break;
         case 'm': doType(VK_M); break;
         case 'n': doType(VK_N); break;
         case 'o': doType(VK_O); break;
+        case 'ó': doType(VK_O); break;
         case 'p': doType(VK_P); break;
         case 'q': doType(VK_Q); break;
         case 'r': doType(VK_R); break;
@@ -110,11 +115,16 @@ public class RobotWindows {
         case 'x': doType(VK_X); break;
         case 'y': doType(VK_Y); break;
         case 'z': doType(VK_Z); break;
+        case 'ź': doType(VK_Z); break;
+        case 'ż': doType(VK_Z); break;
         case 'A': doType(VK_SHIFT, VK_A); break;
+        case 'Ą': doType(VK_SHIFT, VK_A); break;
         case 'B': doType(VK_SHIFT, VK_B); break;
         case 'C': doType(VK_SHIFT, VK_C); break;
+        case 'Ć': doType(VK_SHIFT, VK_C); break;
         case 'D': doType(VK_SHIFT, VK_D); break;
         case 'E': doType(VK_SHIFT, VK_E); break;
+        case 'Ę': doType(VK_SHIFT, VK_E); break;
         case 'F': doType(VK_SHIFT, VK_F); break;
         case 'G': doType(VK_SHIFT, VK_G); break;
         case 'H': doType(VK_SHIFT, VK_H); break;
@@ -122,9 +132,11 @@ public class RobotWindows {
         case 'J': doType(VK_SHIFT, VK_J); break;
         case 'K': doType(VK_SHIFT, VK_K); break;
         case 'L': doType(VK_SHIFT, VK_L); break;
+        case 'Ł': doType(VK_SHIFT, VK_L); break;
         case 'M': doType(VK_SHIFT, VK_M); break;
         case 'N': doType(VK_SHIFT, VK_N); break;
         case 'O': doType(VK_SHIFT, VK_O); break;
+        case 'Ó': doType(VK_SHIFT, VK_O); break;
         case 'P': doType(VK_SHIFT, VK_P); break;
         case 'Q': doType(VK_SHIFT, VK_Q); break;
         case 'R': doType(VK_SHIFT, VK_R); break;
@@ -136,6 +148,8 @@ public class RobotWindows {
         case 'X': doType(VK_SHIFT, VK_X); break;
         case 'Y': doType(VK_SHIFT, VK_Y); break;
         case 'Z': doType(VK_SHIFT, VK_Z); break;
+        case 'Ź': doType(VK_SHIFT, VK_Z); break;
+        case 'Ż': doType(VK_SHIFT, VK_Z); break;
         case '`': doType(VK_BACK_QUOTE); break;
         case '0': doType(VK_0); break;
         case '1': doType(VK_1); break;
@@ -183,7 +197,7 @@ public class RobotWindows {
         case ' ': doType(VK_SPACE); break;
         default:
         	System.out.println("Cannot type character " + character);
-           // throw new IllegalArgumentException("Cannot type character " + character);
+           throw new IllegalArgumentException("Cannot type character " + character);
         }
     }
 
