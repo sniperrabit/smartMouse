@@ -61,7 +61,7 @@ public class RobotWindows {
 				System.out.println("RELEASE");
 				mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 			}else if(line.startsWith("EXIT")){
-					System.out.println("Connection cancel");
+					System.out.println("Connection cancel by EXIT");
 					return false;
 			}else{//in case of text
 				System.out.println(line);
@@ -69,7 +69,7 @@ public class RobotWindows {
 				type(line);
 			}
 		}
-		 System.err.println("Connection cancel");
+		 System.err.println("Connection cancel ERROR");
 		 return false;
 	}
 	
