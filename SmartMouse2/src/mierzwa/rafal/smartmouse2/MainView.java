@@ -1,10 +1,17 @@
 package mierzwa.rafal.smartmouse2;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 import android.app.Activity;
+import android.app.SearchManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,6 +19,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,10 +33,12 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +62,7 @@ public class MainView extends Activity implements SensorEventListener {
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
 	private static final int REQUEST_CONNECT_WIFI = 3;
+	private static final int VOICE_RECOGNITION_REQUEST_CODE=4;
 	// Layout Views
 	private TextView mTitle;
 	private EditText mOutEditText;
@@ -72,6 +83,10 @@ public class MainView extends Activity implements SensorEventListener {
 	private Sensor mAccelerometr;
 	public String connectionType;
 
+	
+	private Button mbtSpeak;
+	
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -122,12 +137,12 @@ public class MainView extends Activity implements SensorEventListener {
 		butRight = (Button) findViewById(R.id.button2);
 		
 		
+		mbtSpeak = (Button) findViewById(R.id.btSpeak);
 
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (D)
-			Log.d(TAG, "onActivityResult " + resultCode);
+		
 		switch (requestCode) {
 		case REQUEST_CONNECT_DEVICE:
 			// When DeviceListActivity returns with a device to connect
@@ -170,9 +185,82 @@ public class MainView extends Activity implements SensorEventListener {
 						Toast.LENGTH_SHORT).show();
 				finish();
 			}
+			
+		case VOICE_RECOGNITION_REQUEST_CODE:
+
+				//If Voice recognition is successful then it returns RESULT_OK
+				if(resultCode == RESULT_OK) {
+
+					ArrayList<String> textMatchList = data
+					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+					if (!textMatchList.isEmpty()) {
+						// If first Match contains the 'search' word
+						// Then start web search.
+						if (textMatchList.get(0).contains("search")) {
+
+							String searchQuery = textMatchList.get(0).replace("search",
+							" ");
+							Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
+							search.putExtra(SearchManager.QUERY, searchQuery);
+							startActivity(search);
+						} else {	
+							mOutEditText.setText(textMatchList.get(0));
+							mSendButton.performClick();
+						}
+
+					}
+				//Result code for various error.	
+				}else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR){
+					showToastMessage("Audio Error");
+				}else if(resultCode == RecognizerIntent.RESULT_CLIENT_ERROR){
+					showToastMessage("Client Error");
+				}else if(resultCode == RecognizerIntent.RESULT_NETWORK_ERROR){
+					showToastMessage("Network Error");
+				}else if(resultCode == RecognizerIntent.RESULT_NO_MATCH){
+					showToastMessage("No Match");
+				}else if(resultCode == RecognizerIntent.RESULT_SERVER_ERROR){
+					showToastMessage("Server Error");
+				}
+			break;
 		}
 	}
 
+	public void checkVoiceRecognition() {
+		// Check if voice recognition is present
+		PackageManager pm = getPackageManager();
+		List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(
+				RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+		if (activities.size() == 0) {
+			mbtSpeak.setEnabled(false);
+			Toast.makeText(this, "Voice recognizer not present",
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	public void speak(View view) {
+		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		// Specify the calling package to identify your application
+		intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass()
+				.getPackage().getName());
+
+		// Display an hint to the user about what he should say.
+		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "powiedz coś");
+
+		// Given an hint to the recognizer about what the user is going to say
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+				RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+			
+		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+
+		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+	}
+	
+	void showToastMessage(String message){
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+	}
+
+	
 	private void ensureDiscoverable() {
 		if (D)
 			Log.d(TAG, "ensure discoverable");
@@ -266,9 +354,11 @@ public class MainView extends Activity implements SensorEventListener {
 			byte[] send = message.getBytes();
 			if(connectionType.equals("Bluethooth")){
 				mChatService.write(send);
+				
 			}else{
 				wifiChatService.write(send);
 			}
+			System.out.println("send: "+send);
 			
 			// Reset out string buffer to zero and clear the edit text field
 			mOutStringBuffer.setLength(0);
@@ -441,7 +531,7 @@ public class MainView extends Activity implements SensorEventListener {
 				String message = view.getText().toString();
 				sendMessage(message + "\n");
 				System.out.println("Button Sending: " + message);
-
+				view.setText("");
 				break;
 
 			default:
