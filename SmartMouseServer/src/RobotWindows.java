@@ -32,7 +32,7 @@ public class RobotWindows {
         String[] y;	
 		int a,b;
 		while (( line = bReader.readLine()) != null) {
-				//System.out.println(line);
+			
 			if(line.startsWith("Mouse")){
 				line=line.replaceFirst("Mouse", "");
 				y=line.split(" ");
@@ -61,11 +61,31 @@ public class RobotWindows {
 				System.out.println("RELEASE");
 				mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 			}else if(line.startsWith("EXIT")){
-					System.out.println("Connection cancel by EXIT");
-					return false;
+				System.out.println("Connection cancel by EXIT");
+				return false;
+			}else if(line.startsWith("DEL")){
+				System.out.println(line);	
+				doType(VK_BACK_SPACE);
+			}else if(line.startsWith("UP")){
+				System.out.println(line);	
+				doType(VK_UP);
+			}else if(line.startsWith("DOWN")){
+				System.out.println(line);	
+				doType(VK_DOWN);
+			}else if(line.startsWith("LEFT")){
+				System.out.println(line);	
+				doType(VK_LEFT);
+			}else if(line.startsWith("RIGHT")){
+				System.out.println(line);	
+				doType(VK_RIGHT);
+			}else if(line.startsWith("ENTER")){
+				System.out.println(line);	
+				doType(VK_ENTER);
+			}else if(line.startsWith("ESC")){
+				System.out.println(line);	
+				doType(VK_ESCAPE);
 			}else{//in case of text
-				System.out.println(line);
-				//objRobot.printText(line);
+				System.out.println(line);	
 				type(line);
 			}
 		}
