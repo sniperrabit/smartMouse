@@ -3,5 +3,5 @@
 
     <string name="app_name">SmartMouse2</string>
     <string name="hello_world">Hello world!</string>
-
+	<string name="MoveMouseHere">--  Move mouse here  --</string>
 </resources>

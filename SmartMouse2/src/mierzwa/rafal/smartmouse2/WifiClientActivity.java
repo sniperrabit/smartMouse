@@ -46,7 +46,7 @@ public class WifiClientActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				textResponse.setText("lol");
+			//	textResponse.setText("lol");
 				
 			}});
 	}
@@ -66,66 +66,66 @@ public class WifiClientActivity extends Activity {
 
 				}};
   
-	public class MyClientTask extends AsyncTask<Void, Void, Void> {
-		
-		String dstAddress;
-		int dstPort;
-		String response = "";
-		
-		MyClientTask(String addr, int port){
-			dstAddress = addr;
-			dstPort = port;
-		}
-
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			
-			Socket socket = null;
-			
-			try {
-				socket = new Socket(dstAddress, dstPort);
-				
-				
-				 //Send the message to the server
-	            OutputStream os = socket.getOutputStream();
-	            OutputStreamWriter osw = new OutputStreamWriter(os);
-	            BufferedWriter bw = new BufferedWriter(osw);
-	 
-	            String s = "hi from client wifi";
-	 
-	            String sendMessage = s + "\n";
-	            bw.write(sendMessage);
-	            bw.flush();
-	            System.out.println("Message sent to the server : "+sendMessage);					    
-
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				response = "UnknownHostException: " + e.toString();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				response = "IOException: " + e.toString();
-			}finally{
-				if(socket != null){
-					try {
-						socket.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			textResponse.setText(response);
-			super.onPostExecute(result);
-			
-		}
-		
-	}
+//	public class MyClientTask extends AsyncTask<Void, Void, Void> {
+//		
+//		String dstAddress;
+//		int dstPort;
+//		String response = "";
+//		
+//		MyClientTask(String addr, int port){
+//			dstAddress = addr;
+//			dstPort = port;
+//		}
+//
+//		@Override
+//		protected Void doInBackground(Void... arg0) {
+//			
+//			Socket socket = null;
+//			
+//			try {
+//				socket = new Socket(dstAddress, dstPort);
+//				
+//				
+//				 //Send the message to the server
+//	            OutputStream os = socket.getOutputStream();
+//	            OutputStreamWriter osw = new OutputStreamWriter(os);
+//	            BufferedWriter bw = new BufferedWriter(osw);
+//	 
+//	            String s = "hi from client wifi";
+//	 
+//	            String sendMessage = s + "\n";
+//	            bw.write(sendMessage);
+//	            bw.flush();
+//	            System.out.println("Message sent to the server : "+sendMessage);					    
+//
+//			} catch (UnknownHostException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				response = "UnknownHostException: " + e.toString();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				response = "IOException: " + e.toString();
+//			}finally{
+//				if(socket != null){
+//					try {
+//						socket.close();
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//			return null;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Void result) {
+//			textResponse.setText(response);
+//			super.onPostExecute(result);
+//			
+//		}
+//		
+//	}
 }
 

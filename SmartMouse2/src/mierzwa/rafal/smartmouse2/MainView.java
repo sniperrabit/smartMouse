@@ -67,8 +67,15 @@ public class MainView extends Activity implements SensorEventListener {
 	private TextView mTitle;
 	private EditText mOutEditText;
 	private Button mSendButton;
-	private Button butLeft;
-	private Button butRight;
+	private Button butClickLeft;
+	private Button butClickRight;
+	private Button butUpArrow;
+	private Button butDownArrow;
+	private Button butLeftArrow;
+	private Button butRightArrow;
+	private Button butDelete;
+	private Button butEnter;
+	private Button butEsc;
 	// Array adapter for the conversation thread
 //	private ArrayAdapter<String> mConversationArrayAdapter;
 	// String buffer for outgoing messages
@@ -85,7 +92,7 @@ public class MainView extends Activity implements SensorEventListener {
 
 	
 	private Button mbtSpeak;
-	
+	private boolean isWifiConected;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -133,10 +140,16 @@ public class MainView extends Activity implements SensorEventListener {
 		mTitle = (TextView) findViewById(R.id.title_left_text);
 		// mTitle.setText("app_name");
 		mTitle = (TextView) findViewById(R.id.title_right_text);
-		butLeft = (Button) findViewById(R.id.button1);
-		butRight = (Button) findViewById(R.id.button2);
+		butClickLeft = (Button) findViewById(R.id.button1);
+		butClickRight = (Button) findViewById(R.id.button2);
 		
-		
+		butUpArrow= (Button) findViewById(R.id.butUpArrow);
+		butDownArrow= (Button) findViewById(R.id.butDownArrow);
+		butLeftArrow= (Button) findViewById(R.id.butLeftArrow);
+		butRightArrow= (Button) findViewById(R.id.butRightArrow);
+		butDelete= (Button) findViewById(R.id.butDelete);
+		butEnter= (Button) findViewById(R.id.butEnter);
+		butEsc= (Button) findViewById(R.id.butEsc);
 		mbtSpeak = (Button) findViewById(R.id.btSpeak);
 
 	}
@@ -162,12 +175,20 @@ public class MainView extends Activity implements SensorEventListener {
 		case REQUEST_CONNECT_WIFI:
 			// When WifiDeviceListActivity returns with a device to connect
 			if (resultCode == Activity.RESULT_OK) {
+				
 				setupWifi();
 				// Get the device MAC address
 				String adress = data.getExtras().getString("adress");
 				int port = data.getExtras().getInt("port");			
 				// Attempt to connect to the device
-				wifiChatService.connect(adress,port);
+				System.out.println("TRY CONNECT");
+				 isWifiConected=wifiChatService.connect(adress,port);
+				System.out.println("TRY2 CONNECT: "+ isWifiConected);
+				if(!isWifiConected){
+					Toast.makeText(this, "Cannot connect to server",
+							Toast.LENGTH_SHORT).show();
+					finish();
+				}
 //				System.out.println("wifiChatService"+wifiChatService+" " +this);
 			}
 			break;
@@ -341,6 +362,7 @@ public class MainView extends Activity implements SensorEventListener {
 	
 	
 	public void sendMessage(String message) {
+		System.out.println("sendMessage");
 		// Check that we're actually connected before trying anything
 		if(connectionType.equals("Bluethooth")){
 			if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
@@ -455,9 +477,16 @@ public class MainView extends Activity implements SensorEventListener {
 		// Initialize the send button with a listener that for click events
 		mSendButton = (Button) findViewById(R.id.button_send);
 		mSendButton.setOnClickListener(buttonClickListner);
-		butLeft.setOnClickListener(buttonClickListner);
-		butRight.setOnClickListener(buttonClickListner);
+		butClickLeft.setOnClickListener(buttonClickListner);
+		butClickRight.setOnClickListener(buttonClickListner);
 
+		butUpArrow.setOnClickListener(buttonClickListner);
+		butDownArrow.setOnClickListener(buttonClickListner);
+		butLeftArrow.setOnClickListener(buttonClickListner);
+		butRightArrow.setOnClickListener(buttonClickListner);
+		butDelete.setOnClickListener(buttonClickListner);
+		butEnter.setOnClickListener(buttonClickListner);
+		butEsc.setOnClickListener(buttonClickListner);
 		// Initialize the BluetoothChatService to perform bluetooth connections
 		mChatService = new BluetoothChatService(this, mHandler);
 
@@ -500,9 +529,16 @@ public class MainView extends Activity implements SensorEventListener {
 		// Initialize the send button with a listener that for click events
 		mSendButton = (Button) findViewById(R.id.button_send);
 		mSendButton.setOnClickListener(buttonClickListner);
-		butLeft.setOnClickListener(buttonClickListner);
-		butRight.setOnClickListener(buttonClickListner);
-  
+		butClickLeft.setOnClickListener(buttonClickListner);
+		butClickRight.setOnClickListener(buttonClickListner);
+		
+		butUpArrow.setOnClickListener(buttonClickListner);
+		butDownArrow.setOnClickListener(buttonClickListner);
+		butLeftArrow.setOnClickListener(buttonClickListner);
+		butRightArrow.setOnClickListener(buttonClickListner);
+		butDelete.setOnClickListener(buttonClickListner);
+		butEnter.setOnClickListener(buttonClickListner);
+		butEsc.setOnClickListener(buttonClickListner);
 		// Initialize the WIFIChatService to perform wifi connections
 
 		wifiChatService = new WifiClientService(this);
@@ -533,7 +569,27 @@ public class MainView extends Activity implements SensorEventListener {
 				System.out.println("Button Sending: " + message);
 				view.setText("");
 				break;
-
+			case R.id.butDelete:
+				sendMessage("DEL\n");
+				break;	
+			case R.id.butUpArrow:
+				sendMessage("UP\n");
+				break;
+			case R.id.butDownArrow:
+				sendMessage("DOWN\n");
+				break;
+			case R.id.butLeftArrow:
+				sendMessage("LEFT\n");
+				break;
+			case R.id.butRightArrow:
+				sendMessage("RIGHT\n");
+				break;
+			case R.id.butEnter:
+				sendMessage("ENTER\n");
+				break;
+			case R.id.butEsc:
+				sendMessage("ESC\n");
+				break;
 			default:
 				break;
 			}
@@ -625,8 +681,7 @@ public class MainView extends Activity implements SensorEventListener {
 	public void onStop() {
 		super.onStop();
 		System.out.println("ON STOP");
-		if (D)
-			Log.e(TAG, "-- ON STOP --");
+	
 	}
 
 	@Override
@@ -641,10 +696,10 @@ public class MainView extends Activity implements SensorEventListener {
 				mChatService.stop();
 				}			
 		}else{
-			System.out.println("TRY STOP ALL WIFI");
-			if (wifiChatService != null){
+			System.out.println("TRY STOP WIFI");
+			if(isWifiConected){
 				sendMessage("EXIT\n");
-				}
+			}
 		}		
 	}
 

@@ -30,23 +30,86 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1.55"
-            android:text="Button1" />
+            android:text="MOUSE LEFT" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1.56"
-            android:text="Button2" />
+            android:text="MOUSE RIGHT" />
 
     </LinearLayout>
 
-    <ImageView
+    <TextView
         android:id="@+id/imageView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1.56"
-       />
+        android:layout_centerInParent="true"
+        android:layout_weight="1.58"
+        android:ellipsize="start"
+        android:gravity="center"
+        android:inputType="textCapWords|textPersonName"
+        android:singleLine="true"
+        android:text="@string/MoveMouseHere"
+        android:textColor="@color/Silver"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        android:gravity="right">
+
+        <Button
+            android:id="@+id/butUpArrow"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="^" />
+
+        <Button
+            android:id="@+id/butDelete"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="DEL" />
+        <Button
+            android:id="@+id/butEsc"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="Esc" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+		android:gravity="right">
+        <Button
+            android:id="@+id/butLeftArrow"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="&lt;--" />
+
+        <Button
+            android:id="@+id/butDownArrow"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="v" />
+
+        <Button
+            android:id="@+id/butRightArrow"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="-->" />
+         <Button
+            android:id="@+id/butEnter"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="Enter" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,20 +121,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_weight="1" />
+            android:layout_weight="1" 
+            android:hint="Text or use voice ->"/>
 
 		<Button
 		    android:id="@+id/btSpeak"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
+		    android:layout_width="70dp"
+            android:layout_height="50dp"
   		    android:onClick="speak"
 		    android:text="Voice" />
 
         <Button
             android:id="@+id/button_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
             android:text="Send" />
+        
     </LinearLayout>
 
 </LinearLayout>
