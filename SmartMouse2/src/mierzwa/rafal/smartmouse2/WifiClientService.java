@@ -32,7 +32,7 @@ public class WifiClientService  {
      * Start the ConnectThread to initiate a connection to a remote device.
      *
      */
-    public synchronized  boolean  connect(String adress, int port) {
+    public synchronized boolean connect(String adress, int port) {
     	
     	Socket socket = null;
 		try {
@@ -45,8 +45,8 @@ public class WifiClientService  {
 			e.printStackTrace();
 		}
 		
-		if (socket==null||mConnectedThread==null){
-			System.out.println("ERROR NULL mConnectedThread");
+		if (socket==null){
+			System.out.println("ERROR NULL socket");
 			return false;
 		}
 		

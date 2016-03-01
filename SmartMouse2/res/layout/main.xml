@@ -41,20 +41,31 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/imageView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_weight="1.58"
-        android:ellipsize="start"
-        android:gravity="center"
-        android:inputType="textCapWords|textPersonName"
-        android:singleLine="true"
-        android:text="@string/MoveMouseHere"
-        android:textColor="@color/Silver"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.58" />
+   
+
+<!--         <TextView -->
+<!--             android:id="@+id/imageView2" -->
+<!--             android:layout_width="match_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_centerInParent="true" -->
+<!--             android:layout_weight="1.58" -->
+<!--             android:clickable="false" -->
+<!--             android:ellipsize="start" -->
+<!--             android:gravity="center" -->
+<!--             android:inputType="textCapWords|textPersonName" -->
+<!--             android:singleLine="true" -->
+<!--             android:text="@string/MoveMouseHere" -->
+<!--             android:textColor="@color/Silver" -->
+<!--             android:textSize="18sp" -->
+<!--             android:textStyle="bold" /> -->
+
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -268,6 +268,8 @@ public class MainView extends Activity implements SensorEventListener {
 		// Display an hint to the user about what he should say.
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "powiedz coś");
 
+	//	 intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+		
 		// Given an hint to the recognizer about what the user is going to say
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 				RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
