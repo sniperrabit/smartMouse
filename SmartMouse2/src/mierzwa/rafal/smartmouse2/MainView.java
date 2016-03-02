@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
 import android.app.Activity;
 import android.app.SearchManager;
 import android.bluetooth.BluetoothAdapter;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
+import android.support.v4.view.MotionEventCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,6 +33,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -296,75 +300,121 @@ public class MainView extends Activity implements SensorEventListener {
 		}
 	}
 
-	int x, y;
+	int x, y,x2, y2;
 	int oldX = 0, oldY = 0;
 	int posX = 0, posY = 0;
 	int tmpX, tmpY;
 	int difX, difY;
-	Long clickUpTime = (long) 0;
-	Long clickDownTime = (long) 0;
-	Long firstClickTime = (long) 0;
+	
+	int numberOfTaps = 0;
+    long lastTapTimeMs = 0;
+    long touchDownMs = 0;
+	
+    int xOldScroll;
+	int yOldScroll;
+    
+	
+	Handler handler = new Handler();
+	boolean tripleTap=false;
+	
 
+	int option = 0;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		x = (int) event.getX();
-		y = (int) event.getY();
+		int action = MotionEventCompat.getActionMasked(event);
+		
+		
+		int index = MotionEventCompat.getActionIndex(event);	 
+		x = (int)MotionEventCompat.getX(event, index);
+		y = (int)MotionEventCompat.getY(event, index);	
 
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
+			switch (action) {
+			case MotionEvent.ACTION_DOWN:
+				  touchDownMs = System.currentTimeMillis();
+				  
+				  if ((System.currentTimeMillis() - touchDownMs) > ViewConfiguration.getTapTimeout()) {
+	                    //it was not a tap					
+	                    numberOfTaps = 0;
+	                    lastTapTimeMs = 0;
+	                    break;
+	                }
 
-			if (isClick(System.currentTimeMillis(), firstClickTime)) {
-				sendMessage("PRESS\n");
-			} else if (isClick(clickUpTime, clickDownTime))
-				sendMessage("CLICK1\n");
+	                if (numberOfTaps > 0 && (System.currentTimeMillis() - lastTapTimeMs) < ViewConfiguration.getDoubleTapTimeout()) {
+	                    numberOfTaps += 1;
+	                } else {
+	                    numberOfTaps = 1;
+	                }
 
-			difX = oldX - x;
-			difY = oldY - y;
-			clickDownTime = System.currentTimeMillis();
-			break;
-		case MotionEvent.ACTION_MOVE:
-
-			x += difX;
-			y += difY;
-			tmpX = x;
-			tmpY = y;
-			sendMessage("Mouse" + x + " " + y + "\n");
-			break;
-		case MotionEvent.ACTION_UP:
-			sendMessage("RELEASE\n");
-			oldX = tmpX;
-			oldY = tmpY;
-			clickUpTime = System.currentTimeMillis();
-
-			if (isClick(clickUpTime, clickDownTime)) {
-				// sendMessage("CLICK1\n");not here because windows get
-				// click->press minimalize windows not moves windows like we
-				// want
-
-				firstClickTime = System.currentTimeMillis();
-
-			}
-			break;
-		}
-
+	                lastTapTimeMs = System.currentTimeMillis();
+	                if (numberOfTaps == 3) {
+	                	System.out.println("Triple tap ");		
+	                	tripleTap=true;
+	                	yOldScroll=y;
+	                	xOldScroll=x;
+	                	numberOfTaps = 0;
+		                lastTapTimeMs = 0;
+	                } else if (numberOfTaps == 2) {
+	                    handler.postDelayed(new Runnable() {
+	                        @Override
+	                        public void run() {
+	                        	if (tripleTap==false){
+	                        	sendMessage("PRESS\n");
+	    	                    System.out.println("PRESS ");
+	                        	}
+	                        }
+	                    }, ViewConfiguration.getDoubleTapTimeout());
+	                    
+	                }
+				   			  
+				difX = oldX - x;
+				difY = oldY - y;				
+				break;
+			case MotionEvent.ACTION_MOVE:
+				if(tripleTap){
+					
+					if(y<yOldScroll)sendMessage("UP\n");
+					if(y>yOldScroll)sendMessage("DOWN\n");
+//					if(x<xOldScroll)sendMessage("LEFT\n");
+//					if(x>xOldScroll)sendMessage("RIGHT\n");
+					
+					yOldScroll=y;
+					xOldScroll=x;
+					break;
+				}else{
+					x += difX;
+					y += difY;
+					tmpX = x;
+					tmpY = y;
+					
+					sendMessage("Mouse" + x + " " + y + "\n");
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				if(tripleTap)tripleTap=false;
+				
+				sendMessage("RELEASE\n");
+					oldX = tmpX;
+					oldY = tmpY;
+				break;
+			}	
 		return false;
 	}
 
 	
 	private boolean isClick(Long biggerTime, Long smallerTime) {
 		Long diff = ((biggerTime - smallerTime));
-		System.out.println("diff " + diff);
+	//	System.out.println("diff " + diff);
 
 		if (diff > 230)
 			return false;
-		System.out.println("CLICKED ");
+		
 		return true;
 	}
 
 	
 	
 	public void sendMessage(String message) {
-		System.out.println("sendMessage");
+	
 		// Check that we're actually connected before trying anything
 		if(connectionType.equals("Bluethooth")){
 			if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
@@ -382,7 +432,7 @@ public class MainView extends Activity implements SensorEventListener {
 			}else{
 				wifiChatService.write(send);
 			}
-			System.out.println("send: "+send);
+	
 			
 			// Reset out string buffer to zero and clear the edit text field
 			mOutStringBuffer.setLength(0);
