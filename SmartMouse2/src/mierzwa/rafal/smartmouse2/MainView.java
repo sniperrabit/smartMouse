@@ -93,10 +93,13 @@ public class MainView extends Activity implements SensorEventListener {
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometr;
 	public String connectionType;
-
 	
 	private Button mbtSpeak;
+	private Button mbtSpeakLoop;
+	private View vbtSpeakLoop;
 	private boolean isWifiConected;
+	
+	boolean isThreadVoice=true;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -155,7 +158,8 @@ public class MainView extends Activity implements SensorEventListener {
 		butEnter= (Button) findViewById(R.id.butEnter);
 		butEsc= (Button) findViewById(R.id.butEsc);
 		mbtSpeak = (Button) findViewById(R.id.btSpeak);
-
+		mbtSpeakLoop = (Button) findViewById(R.id.btSpeakLoop);
+		vbtSpeakLoop=findViewById(R.id.btSpeakLoop);
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -211,27 +215,39 @@ public class MainView extends Activity implements SensorEventListener {
 				finish();
 			}
 			
-		case VOICE_RECOGNITION_REQUEST_CODE:
+		case VOICE_RECOGNITION_REQUEST_CODE:			
+	//		System.out.println("resultCode "+resultCode);
+				
+				if(isThreadVoice && resultCode != RESULT_OK && resultCode != 0) {
+					
+					mbtSpeak.performClick();
+					break;
+				}
 
 				//If Voice recognition is successful then it returns RESULT_OK
-				if(resultCode == RESULT_OK) {
-
+				if( resultCode != 0) {
+						
 					ArrayList<String> textMatchList = data
 					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
 					if (!textMatchList.isEmpty()) {
 						// If first Match contains the 'search' word
 						// Then start web search.
-						if (textMatchList.get(0).contains("search")) {
-
-							String searchQuery = textMatchList.get(0).replace("search",
-							" ");
-							Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
-							search.putExtra(SearchManager.QUERY, searchQuery);
-							startActivity(search);
-						} else {	
-							mOutEditText.setText(textMatchList.get(0));
-							mSendButton.performClick();
+//						if (textMatchList.get(0).contains("search")) {
+//
+//							String searchQuery = textMatchList.get(0).replace("search",
+//							" ");
+//							Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
+//							search.putExtra(SearchManager.QUERY, searchQuery);
+//							startActivity(search);
+//						} else
+						if (isThreadVoice){											
+							sendMessage(textMatchList.get(0)+" \n");
+							speak(vbtSpeakLoop);
+							break;
+						}else {					
+							sendMessage(textMatchList.get(0)+" \n");	
+							break;
 						}
 
 					}
@@ -264,13 +280,20 @@ public class MainView extends Activity implements SensorEventListener {
 	}
 
 	public void speak(View view) {
+		System.out.println("view.getId() "+view.getId());
+		if (R.id.btSpeak==view.getId()){
+			 isThreadVoice=false;
+		}else{
+			 isThreadVoice=true;
+		}
+		
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		// Specify the calling package to identify your application
 		intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass()
 				.getPackage().getName());
 
 		// Display an hint to the user about what he should say.
-		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "powiedz coś");
+		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something");
 
 	//	 intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
 		

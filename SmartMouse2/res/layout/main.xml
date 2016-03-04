@@ -71,24 +71,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" 
-        android:gravity="right">
+        >
+
+        <Button
+            android:id="@+id/butEsc"
+            android:layout_width="64dp"
+            android:layout_height="50dp"
+            android:text="Esc" />
 
         <Button
             android:id="@+id/butUpArrow"
-            android:layout_width="70dp"
+            android:layout_width="64dp"
             android:layout_height="50dp"
             android:text="^" />
 
         <Button
             android:id="@+id/butDelete"
-            android:layout_width="70dp"
+            android:layout_width="64dp"
             android:layout_height="50dp"
             android:text="DEL" />
+
         <Button
-            android:id="@+id/butEsc"
-            android:layout_width="70dp"
+            android:id="@+id/butEnter"
+            android:layout_width="fill_parent"
             android:layout_height="50dp"
-            android:text="Esc" />
+            android:text="Enter" />
 
     </LinearLayout>
 
@@ -96,29 +103,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" 
-		android:gravity="right">
+		>
+
         <Button
             android:id="@+id/butLeftArrow"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:minWidth="64dp"
             android:text="&lt;--" />
 
         <Button
             android:id="@+id/butDownArrow"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
+              android:minWidth="64dp"
             android:text="v" />
 
         <Button
             android:id="@+id/butRightArrow"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
+             android:minWidth="64dp"
             android:text="-->" />
-         <Button
-            android:id="@+id/butEnter"
-            android:layout_width="70dp"
+
+        <Button
+            android:id="@+id/btSpeak"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:text="Enter" />
+            android:onClick="speak"
+            android:text="Voice"
+           
+            android:textSize="14dp" /> />
+
+        <Button
+            android:id="@+id/btSpeakLoop"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:onClick="speak"
+            android:text="Voice Loop"
+            
+            android:textSize="14dp" />
 
     </LinearLayout>
 
@@ -135,17 +159,11 @@
             android:layout_weight="1" 
             android:hint="Text or use voice ->"/>
 
-		<Button
-		    android:id="@+id/btSpeak"
-		    android:layout_width="70dp"
-            android:layout_height="50dp"
-  		    android:onClick="speak"
-		    android:text="Voice" />
-
         <Button
             android:id="@+id/button_send"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_weight="2.33"
             android:text="Send" />
         
     </LinearLayout>
