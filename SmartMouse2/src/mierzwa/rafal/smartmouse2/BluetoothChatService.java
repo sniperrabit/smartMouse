@@ -31,9 +31,11 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -136,6 +138,8 @@ public class BluetoothChatService {
         mConnectThread = new ConnectThread(device);
         mConnectThread.start();
         setState(STATE_CONNECTING);
+      
+      
     }
 
     /**
@@ -167,8 +171,11 @@ public class BluetoothChatService {
 //        mHandler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
+        System.out.println("STATE_CONNECTING show progress bar");
+       
     }
 
+   
     /**
      * Stop all threads
      */

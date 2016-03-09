@@ -7,6 +7,9 @@ import java.util.List;
 
 
 
+
+
+
 import android.app.Activity;
 import android.app.SearchManager;
 import android.bluetooth.BluetoothAdapter;
@@ -19,6 +22,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognizerIntent;
@@ -26,6 +30,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +47,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -100,6 +106,8 @@ public class MainView extends Activity implements SensorEventListener {
 	private boolean isWifiConected;
 	
 	boolean isThreadVoice=true;
+	
+	
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -160,6 +168,8 @@ public class MainView extends Activity implements SensorEventListener {
 		mbtSpeak = (Button) findViewById(R.id.btSpeak);
 		mbtSpeakLoop = (Button) findViewById(R.id.btSpeakLoop);
 		vbtSpeakLoop=findViewById(R.id.btSpeakLoop);
+		
+		
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -178,6 +188,16 @@ public class MainView extends Activity implements SensorEventListener {
 				// Attempt to connect to the device
 				mChatService.connect(device);
 				System.out.println("mChatService.connect(device);");
+				
+				
+				Toast toast= Toast.makeText(getApplicationContext(), 
+						"Please wait...", Toast.LENGTH_LONG);  
+						toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+						toast.show();
+				Toast toast2= Toast.makeText(getApplicationContext(), 
+						"Please wait...", Toast.LENGTH_LONG);  
+						toast2.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+						toast2.show();
 			}
 			break;
 		case REQUEST_CONNECT_WIFI:
@@ -267,6 +287,8 @@ public class MainView extends Activity implements SensorEventListener {
 		}
 	}
 
+
+	
 	public void checkVoiceRecognition() {
 		// Check if voice recognition is present
 		PackageManager pm = getPackageManager();
