@@ -1,14 +1,10 @@
 package mierzwa.rafal.smartmouse2;
 
 
+
+
 import java.util.ArrayList;
 import java.util.List;
-
-
-
-
-
-
 
 import android.app.Activity;
 import android.app.SearchManager;
@@ -29,6 +25,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.view.MotionEventCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -45,6 +42,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -73,6 +71,7 @@ public class MainView extends Activity implements SensorEventListener {
 	private static final int REQUEST_ENABLE_BT = 2;
 	private static final int REQUEST_CONNECT_WIFI = 3;
 	private static final int VOICE_RECOGNITION_REQUEST_CODE=4;
+	private static final int SENSOR_STATE_REQUEST_CODE=5;
 	// Layout Views
 	private TextView mTitle;
 	private EditText mOutEditText;
@@ -86,9 +85,6 @@ public class MainView extends Activity implements SensorEventListener {
 	private Button butDelete;
 	private Button butEnter;
 	private Button butEsc;
-	// Array adapter for the conversation thread
-//	private ArrayAdapter<String> mConversationArrayAdapter;
-	// String buffer for outgoing messages
 	private StringBuffer mOutStringBuffer;
 	// Local Bluetooth adapter
 	private BluetoothAdapter mBluetoothAdapter = null;
@@ -105,9 +101,10 @@ public class MainView extends Activity implements SensorEventListener {
 	private View vbtSpeakLoop;
 	private boolean isWifiConected;
 	
+	boolean isSensorEnable=false;
+	Thread sensorThread;
+	
 	boolean isThreadVoice=true;
-	
-	
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -133,17 +130,12 @@ public class MainView extends Activity implements SensorEventListener {
 				return;
 			}
 		}else {
-			
 			Intent serverIntent = new Intent(this, WifiClientActivity.class);
 			startActivityForResult(serverIntent, REQUEST_CONNECT_WIFI);
-			
 		}
 		
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		mAccelerometr = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-
-		if (D)
-			Log.e(TAG, "+++ ON CREATE +++");
+		mAccelerometr = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 		// Set up the window layout
 		// requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
@@ -284,10 +276,24 @@ public class MainView extends Activity implements SensorEventListener {
 					showToastMessage("Server Error");
 				}
 			break;
+		case SENSOR_STATE_REQUEST_CODE:
+			System.out.println("1");
+			if(resultCode == Activity.RESULT_OK) {
+				System.out.println("2");
+				 boolean isEnable=data.getBooleanExtra("SensorState", false);
+				if(isEnable){ 
+					System.out.println("3");
+					sensorThread=new Thread(new MouseSensorThread(this));
+					sensorThread.start();
+					isSensorEnable=true;
+				}else{
+					isSensorEnable=false;
+				}
+			}
+			
+			break;
 		}
 	}
-
-
 	
 	public void checkVoiceRecognition() {
 		// Check if voice recognition is present
@@ -327,11 +333,11 @@ public class MainView extends Activity implements SensorEventListener {
 
 		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 	}
-	
 	void showToastMessage(String message){
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-	}
-
+	}	
+	
+	
 	
 	private void ensureDiscoverable() {
 		if (D)
@@ -346,6 +352,9 @@ public class MainView extends Activity implements SensorEventListener {
 	}
 
 	int x, y,x2, y2;
+	
+	
+
 	int oldX = 0, oldY = 0;
 	int posX = 0, posY = 0;
 	int tmpX, tmpY;
@@ -358,16 +367,15 @@ public class MainView extends Activity implements SensorEventListener {
     int xOldScroll;
 	int yOldScroll;
     
-	
 	Handler handler = new Handler();
 	boolean tripleTap=false;
+	
 	
 
 	int option = 0;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		int action = MotionEventCompat.getActionMasked(event);
-		
 		
 		int index = MotionEventCompat.getActionIndex(event);	 
 		x = (int)MotionEventCompat.getX(event, index);
@@ -444,19 +452,6 @@ public class MainView extends Activity implements SensorEventListener {
 			}	
 		return false;
 	}
-
-	
-	private boolean isClick(Long biggerTime, Long smallerTime) {
-		Long diff = ((biggerTime - smallerTime));
-	//	System.out.println("diff " + diff);
-
-		if (diff > 230)
-			return false;
-		
-		return true;
-	}
-
-	
 	
 	public void sendMessage(String message) {
 	
@@ -507,9 +502,12 @@ public class MainView extends Activity implements SensorEventListener {
 			// Ensure this device is discoverable by others
 			ensureDiscoverable();
 			return true;
-
-			// Wstawiamy tutaj pozosta�e elementy (je�li jakie� b�d�) ...
-
+		case R.id.action_settings:
+			Intent intent = new Intent(this, SettingsActivity.class);
+			intent.putExtra("isSensorEnable", isSensorEnable);
+			startActivityForResult(intent, SENSOR_STATE_REQUEST_CODE);
+			return true;	
+		
 		}
 		return false;
 	}
@@ -535,7 +533,7 @@ public class MainView extends Activity implements SensorEventListener {
 		
 
 		mSensorManager.registerListener(this, mAccelerometr,
-				SensorManager.SENSOR_DELAY_FASTEST);
+				SensorManager.SENSOR_DELAY_NORMAL);
 
 	}
 
@@ -589,6 +587,9 @@ public class MainView extends Activity implements SensorEventListener {
 
 		// Initialize the buffer for outgoing messages
 		mOutStringBuffer = new StringBuffer("");
+		
+
+		
 	}
 	
 	private void setupWifi() {
@@ -701,7 +702,7 @@ public class MainView extends Activity implements SensorEventListener {
 				KeyEvent event) {
 			// If the action is a key-up event on the return key, send the
 			// message
-			System.out.println("COKOLWIEK9");
+			System.out.println("onEditorAction");
 			if (actionId == EditorInfo.IME_NULL
 					&& event.getAction() == KeyEvent.ACTION_UP) {
 				String message = view.getText().toString();
@@ -764,9 +765,6 @@ public class MainView extends Activity implements SensorEventListener {
 		}
 	};
 
-	
-	
-
 	@Override
 	protected synchronized void onPause() {
 		super.onPause();
@@ -799,27 +797,6 @@ public class MainView extends Activity implements SensorEventListener {
 			}
 		}		
 	}
-
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//	    if (keyCode == KeyEvent.KEYCODE_BACK
-//	            && event.getRepeatCount() == 0) {
-//	        event.startTracking();
-//	        return true;
-//	    }
-//	    return super.onKeyDown(keyCode, event);
-//	}
-//
-//	public boolean onKeyUp(int keyCode, KeyEvent event) {
-//	    if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
-//	            && !event.isCanceled()) {
-//	    	System.out.println("TRY STOP ALL WIFI");
-//			if (wifiChatService != null)
-//				sendMessage("EXIT\n");
-//	        return true;
-//	    }
-//	    return super.onKeyUp(keyCode, event);
-//	}
-	
 	
 	@Override
 	public void onStart() {
@@ -847,31 +824,27 @@ public class MainView extends Activity implements SensorEventListener {
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// TODO Auto-generated method stub
 	}
+	 float axisX ;
+     float axisY;
+     public static final float EPSILON = 0.000000001f;
+    
+     public void onSensorChanged(SensorEvent event) {
+    	
+             axisX = event.values[0];
+             axisY = event.values[1];
+//          	do{
+//	             if(axisX>1||axisX<-1||axisY>1||axisY<-1){
+//		              System.out.println(Math.round(axisX)+" "+Math.round(axisY));
+//		              x-=3*axisX;
+//		              y-=3*axisY;
+//		              sendMessage("Mouse" + x + " " + y + "\n");
+//	             
+//	             }
+//	             axisX = event.values[0];
+//	             axisY = event.values[1];
+//          	}while(axisX>1||axisX<-1||axisY>1||axisY<-1);
+    }
+	
 
-
-	public float xPosition_ost = 0.0f, xPosition = 0.0f, xAcceleration,xVelocity = 0.0f;
-	public float yPosition_ost = 0.0f, yPosition = 0.0f, yAcceleration,yVelocity = 0.0f;
-	public long frameTime, lastTime;
-	int licznikBezruchuX = 0;
-	int licznikBezruchuY = 0;
-	public float lastX = 0, lastY = 0;
-	public int licznik = 0, rozmiar = 10;;
-	public float przesuniecieX, przesuniecieY, pierwszyPomiarX,pierwszyPomiarY;
-	boolean mFirstAfterBreak = true;
-
-	public boolean isMove(float Acceleration) {
-		if (Math.abs(Acceleration) > (float) 0.5)
-			return true;
-
-		return false;
-	}
-
-	float sumax = 0;
-	float sumay = 0;
-
-	@Override
-	public void onSensorChanged(SensorEvent e) {
-
-	}
 
 }

@@ -11,6 +11,7 @@
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
         android:required="true" />
+    <uses-feature android:name="android.hardware.sensor.gyroscope" android:required="true"/>
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -38,6 +39,11 @@
         </activity>
         <activity
             android:name=".BluetoothDeviceListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.Dialog" 
+             android:screenOrientation="portrait"/>
+         <activity
+            android:name=".SettingsActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.Dialog" 
              android:screenOrientation="portrait"/>
