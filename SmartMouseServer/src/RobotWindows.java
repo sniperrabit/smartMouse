@@ -122,12 +122,14 @@ public class RobotWindows {
         case 'ł': doType(VK_L); break;
         case 'm': doType(VK_M); break;
         case 'n': doType(VK_N); break;
+        case 'ń': doType(VK_N); break;
         case 'o': doType(VK_O); break;
         case 'ó': doType(VK_O); break;
         case 'p': doType(VK_P); break;
         case 'q': doType(VK_Q); break;
         case 'r': doType(VK_R); break;
         case 's': doType(VK_S); break;
+        case 'ś': doType(VK_S); break;
         case 't': doType(VK_T); break;
         case 'u': doType(VK_U); break;
         case 'v': doType(VK_V); break;
@@ -155,12 +157,14 @@ public class RobotWindows {
         case 'Ł': doType(VK_SHIFT, VK_L); break;
         case 'M': doType(VK_SHIFT, VK_M); break;
         case 'N': doType(VK_SHIFT, VK_N); break;
+        case 'Ń': doType(VK_SHIFT, VK_N); break;
         case 'O': doType(VK_SHIFT, VK_O); break;
         case 'Ó': doType(VK_SHIFT, VK_O); break;
         case 'P': doType(VK_SHIFT, VK_P); break;
         case 'Q': doType(VK_SHIFT, VK_Q); break;
         case 'R': doType(VK_SHIFT, VK_R); break;
         case 'S': doType(VK_SHIFT, VK_S); break;
+        case 'Ś': doType(VK_SHIFT, VK_S); break;
         case 'T': doType(VK_SHIFT, VK_T); break;
         case 'U': doType(VK_SHIFT, VK_U); break;
         case 'V': doType(VK_SHIFT, VK_V); break;
@@ -188,10 +192,10 @@ public class RobotWindows {
         case '@': doType(VK_AT); break;
         case '#': doType(VK_NUMBER_SIGN); break;
         case '$': doType(VK_DOLLAR); break;
-        case '%': doType(VK_SHIFT, VK_5); break;
+        case '%': doType(VK_SHIFT, VK_5); break;       
         case '^': doType(VK_CIRCUMFLEX); break;
-        case '&': doType(VK_AMPERSAND); break;
-        case '*': doType(VK_ASTERISK); break;
+        case '&':  break;
+        case '*':  break;
         case '(': doType(VK_LEFT_PARENTHESIS); break;
         case ')': doType(VK_RIGHT_PARENTHESIS); break;
         case '_': doType(VK_UNDERSCORE); break;
@@ -217,7 +221,7 @@ public class RobotWindows {
         case ' ': doType(VK_SPACE); break;
         default:
         	System.out.println("Cannot type character " + character);
-           throw new IllegalArgumentException("Cannot type character " + character);
+//           throw new IllegalArgumentException("Cannot type character " + character);
         }
     }
 
@@ -229,10 +233,13 @@ public class RobotWindows {
         if (length == 0) {
             return;
         }
-
-        robot.keyPress(keyCodes[offset]);
-        doType(keyCodes, offset + 1, length - 1);
-        robot.keyRelease(keyCodes[offset]);
+		try{
+		        robot.keyPress(keyCodes[offset]);
+		        doType(keyCodes, offset + 1, length - 1);
+		        robot.keyRelease(keyCodes[offset]);
+		}catch(IllegalArgumentException e){
+			System.out.println("Didn't find character!");
+		}
     }
 
 	
