@@ -1,8 +1,5 @@
 package mierzwa.rafal.smartmouse2;
 
-
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +68,7 @@ public class MainView extends Activity implements SensorEventListener {
 	private static final int REQUEST_ENABLE_BT = 2;
 	private static final int REQUEST_CONNECT_WIFI = 3;
 	private static final int VOICE_RECOGNITION_REQUEST_CODE=4;
-	private static final int SENSOR_STATE_REQUEST_CODE=5;
+	private static final int SETTINGS_STATE_REQUEST_CODE=5;
 	// Layout Views
 	private TextView mTitle;
 	private EditText mOutEditText;
@@ -276,19 +273,18 @@ public class MainView extends Activity implements SensorEventListener {
 					showToastMessage("Server Error");
 				}
 			break;
-		case SENSOR_STATE_REQUEST_CODE:
-			System.out.println("1");
+		case SETTINGS_STATE_REQUEST_CODE:	
 			if(resultCode == Activity.RESULT_OK) {
-				System.out.println("2");
-				 boolean isEnable=data.getBooleanExtra("SensorState", false);
+				boolean isEnable=data.getBooleanExtra("SensorState", false);
 				if(isEnable){ 
-					System.out.println("3");
 					sensorThread=new Thread(new MouseSensorThread(this));
 					sensorThread.start();
 					isSensorEnable=true;
 				}else{
 					isSensorEnable=false;
 				}
+				mouseSens=(float)data.getIntExtra("mouseSens", 50);
+				mouseSens/=50;
 			}
 			
 			break;
@@ -337,8 +333,6 @@ public class MainView extends Activity implements SensorEventListener {
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}	
 	
-	
-	
 	private void ensureDiscoverable() {
 		if (D)
 			Log.d(TAG, "ensure discoverable");
@@ -352,9 +346,6 @@ public class MainView extends Activity implements SensorEventListener {
 	}
 
 	int x, y,x2, y2;
-	
-	
-
 	int oldX = 0, oldY = 0;
 	int posX = 0, posY = 0;
 	int tmpX, tmpY;
@@ -366,20 +357,17 @@ public class MainView extends Activity implements SensorEventListener {
 	
     int xOldScroll;
 	int yOldScroll;
-    
+    float mouseSens=1;
 	Handler handler = new Handler();
 	boolean tripleTap=false;
-	
-	
 
-	int option = 0;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		int action = MotionEventCompat.getActionMasked(event);
 		
 		int index = MotionEventCompat.getActionIndex(event);	 
-		x = (int)MotionEventCompat.getX(event, index);
-		y = (int)MotionEventCompat.getY(event, index);	
+		x = (int)(MotionEventCompat.getX(event, index)*mouseSens);
+		y = (int)(MotionEventCompat.getY(event, index)*mouseSens);	
 
 			switch (action) {
 			case MotionEvent.ACTION_DOWN:
@@ -420,7 +408,8 @@ public class MainView extends Activity implements SensorEventListener {
 	                }
 				   			  
 				difX = oldX - x;
-				difY = oldY - y;				
+				difY = oldY - y;	
+				
 				break;
 			case MotionEvent.ACTION_MOVE:
 				if(tripleTap){
@@ -434,6 +423,7 @@ public class MainView extends Activity implements SensorEventListener {
 					xOldScroll=x;
 					break;
 				}else{
+					
 					x += difX;
 					y += difY;
 					tmpX = x;
@@ -468,11 +458,9 @@ public class MainView extends Activity implements SensorEventListener {
 			byte[] send = message.getBytes();
 			if(connectionType.equals("Bluethooth")){
 				mChatService.write(send);
-				
 			}else{
 				wifiChatService.write(send);
 			}
-	
 			
 			// Reset out string buffer to zero and clear the edit text field
 			mOutStringBuffer.setLength(0);
@@ -480,7 +468,6 @@ public class MainView extends Activity implements SensorEventListener {
 		}
 	}
 
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -488,7 +475,6 @@ public class MainView extends Activity implements SensorEventListener {
 		inflater.inflate(R.menu.option_menu, menu);
 		return true;
 	}
-
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem element) {
@@ -505,7 +491,9 @@ public class MainView extends Activity implements SensorEventListener {
 		case R.id.action_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);
 			intent.putExtra("isSensorEnable", isSensorEnable);
-			startActivityForResult(intent, SENSOR_STATE_REQUEST_CODE);
+			float fl=mouseSens*50;
+			intent.putExtra("mouseSens", fl);
+			startActivityForResult(intent, SETTINGS_STATE_REQUEST_CODE);
 			return true;	
 		
 		}
@@ -826,7 +814,7 @@ public class MainView extends Activity implements SensorEventListener {
 	}
 	 float axisX ;
      float axisY;
-     public static final float EPSILON = 0.000000001f;
+   
     
      public void onSensorChanged(SensorEvent event) {
     	
