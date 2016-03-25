@@ -82,6 +82,9 @@ public class MainView extends Activity implements SensorEventListener {
 	private Button butDelete;
 	private Button butEnter;
 	private Button butEsc;
+	private Button butCalibration;
+	private CheckBox checkboxSensorPause;
+	
 	private StringBuffer mOutStringBuffer;
 	// Local Bluetooth adapter
 	private BluetoothAdapter mBluetoothAdapter = null;
@@ -98,6 +101,7 @@ public class MainView extends Activity implements SensorEventListener {
 	private View vbtSpeakLoop;
 	private boolean isWifiConected;
 	
+	boolean isSensorPause=true;
 	boolean isSensorEnable=false;
 	Thread sensorThread;
 	
@@ -157,7 +161,22 @@ public class MainView extends Activity implements SensorEventListener {
 		mbtSpeak = (Button) findViewById(R.id.btSpeak);
 		mbtSpeakLoop = (Button) findViewById(R.id.btSpeakLoop);
 		vbtSpeakLoop=findViewById(R.id.btSpeakLoop);
+		butCalibration=(Button)findViewById(R.id.butCalibration);
+		checkboxSensorPause=(CheckBox)findViewById(R.id.checkboxSensorPause);
 		
+		mSendButton = (Button) findViewById(R.id.button_send);
+		mSendButton.setOnClickListener(buttonClickListner);
+		butClickLeft.setOnClickListener(buttonClickListner);
+		butClickRight.setOnClickListener(buttonClickListner);
+
+		butUpArrow.setOnClickListener(buttonClickListner);
+		butDownArrow.setOnClickListener(buttonClickListner);
+		butLeftArrow.setOnClickListener(buttonClickListner);
+		butRightArrow.setOnClickListener(buttonClickListner);
+		butDelete.setOnClickListener(buttonClickListner);
+		butEnter.setOnClickListener(buttonClickListner);
+		butEsc.setOnClickListener(buttonClickListner);		
+		butCalibration.setOnClickListener(buttonClickListner);	
 		
 	}
 	
@@ -280,8 +299,12 @@ public class MainView extends Activity implements SensorEventListener {
 					sensorThread=new Thread(new MouseSensorThread(this));
 					sensorThread.start();
 					isSensorEnable=true;
+					butCalibration.setVisibility(View.VISIBLE);
+					checkboxSensorPause.setVisibility(View.VISIBLE);
 				}else{
 					isSensorEnable=false;
+					butCalibration.setVisibility(View.GONE);
+					checkboxSensorPause.setVisibility(View.GONE);
 				}
 				mouseSens=(float)data.getIntExtra("mouseSens", 50);
 				mouseSens/=50;
@@ -558,18 +581,7 @@ public class MainView extends Activity implements SensorEventListener {
 		});
 
 		// Initialize the send button with a listener that for click events
-		mSendButton = (Button) findViewById(R.id.button_send);
-		mSendButton.setOnClickListener(buttonClickListner);
-		butClickLeft.setOnClickListener(buttonClickListner);
-		butClickRight.setOnClickListener(buttonClickListner);
-
-		butUpArrow.setOnClickListener(buttonClickListner);
-		butDownArrow.setOnClickListener(buttonClickListner);
-		butLeftArrow.setOnClickListener(buttonClickListner);
-		butRightArrow.setOnClickListener(buttonClickListner);
-		butDelete.setOnClickListener(buttonClickListner);
-		butEnter.setOnClickListener(buttonClickListner);
-		butEsc.setOnClickListener(buttonClickListner);
+	
 		// Initialize the BluetoothChatService to perform bluetooth connections
 		mChatService = new BluetoothChatService(this, mHandler);
 
@@ -612,19 +624,7 @@ public class MainView extends Activity implements SensorEventListener {
 			}
 		});
 
-		// Initialize the send button with a listener that for click events
-		mSendButton = (Button) findViewById(R.id.button_send);
-		mSendButton.setOnClickListener(buttonClickListner);
-		butClickLeft.setOnClickListener(buttonClickListner);
-		butClickRight.setOnClickListener(buttonClickListner);
 		
-		butUpArrow.setOnClickListener(buttonClickListner);
-		butDownArrow.setOnClickListener(buttonClickListner);
-		butLeftArrow.setOnClickListener(buttonClickListner);
-		butRightArrow.setOnClickListener(buttonClickListner);
-		butDelete.setOnClickListener(buttonClickListner);
-		butEnter.setOnClickListener(buttonClickListner);
-		butEsc.setOnClickListener(buttonClickListner);
 		// Initialize the WIFIChatService to perform wifi connections
 
 		wifiChatService = new WifiClientService(this);
@@ -676,6 +676,10 @@ public class MainView extends Activity implements SensorEventListener {
 			case R.id.butEsc:
 				sendMessage("ESC\n");
 				break;
+			case R.id.butCalibration:
+				calibration();
+				break;
+			
 			default:
 				break;
 			}
@@ -683,6 +687,11 @@ public class MainView extends Activity implements SensorEventListener {
 		}
 	};
 
+	private void calibration(){
+	    	calibrationX=originAxisX;
+	    	calibrationY=originAxisY;
+	    	System.out.println("calibration"+calibrationX+" "+calibrationY);
+	}	    	
 	
 	// The action listener for the EditText widget, to listen for the return key
 	private TextView.OnEditorActionListener mWriteListener = new TextView.OnEditorActionListener() {
@@ -808,18 +817,35 @@ public class MainView extends Activity implements SensorEventListener {
 		}
 	}
 
+	public void pauseSensor(View view){
+		 if(checkboxSensorPause.isChecked()){				
+			 isSensorPause=true;
+		 }else{	
+			 isSensorPause=false;					
+		 }
+		 System.out.println("sensor "+isSensorPause);
+	}
+	
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// TODO Auto-generated method stub
 	}
-	 float axisX ;
+	
+	 float axisX;
      float axisY;
-   
-    
+     float originAxisX;
+     float originAxisY;
+     float calibrationX=0;
+     float calibrationY=0;
+     
      public void onSensorChanged(SensorEvent event) {
-    	
-             axisX = event.values[0];
-             axisY = event.values[1];
+
+		
+		
+    	 originAxisX = event.values[0];
+    	 originAxisY = event.values[1];
+    	 axisX = originAxisX-calibrationX;
+    	 axisY = originAxisY-calibrationY;
 //          	do{
 //	             if(axisX>1||axisX<-1||axisY>1||axisY<-1){
 //		              System.out.println(Math.round(axisX)+" "+Math.round(axisY));
