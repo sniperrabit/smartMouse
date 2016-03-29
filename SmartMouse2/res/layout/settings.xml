@@ -23,14 +23,41 @@
         android:id="@+id/gyroscope"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gyroscope mouse" 
-        android:onClick="changeSensorState"/>
+        android:layout_marginTop="20dp"
+        android:onClick="changeSensorState"
+        android:text="Gyroscope mouse" />
 
-    <Button
-        android:id="@+id/buttonOK"
+    <CheckBox
+        android:id="@+id/multiscreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="OK" />
+        android:layout_marginTop="20dp"
+        android:onClick="setIsMultiscreen"
+        android:text="Multiscreen" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="0.05"
+            android:text="Default" 
+            android:onClick="setDefaultValues"/>
+
+        <Button
+            android:id="@+id/buttonOK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="0.10"
+            android:text="OK" />
+
+    </LinearLayout>
 
 </LinearLayout>

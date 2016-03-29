@@ -101,6 +101,7 @@ public class MainView extends Activity implements SensorEventListener {
 	private View vbtSpeakLoop;
 	private boolean isWifiConected;
 	
+	boolean isMultiscreen=false;
 	boolean isSensorPause=true;
 	boolean isSensorEnable=false;
 	Thread sensorThread;
@@ -294,18 +295,17 @@ public class MainView extends Activity implements SensorEventListener {
 			break;
 		case SETTINGS_STATE_REQUEST_CODE:	
 			if(resultCode == Activity.RESULT_OK) {
-				boolean isEnable=data.getBooleanExtra("SensorState", false);
-				if(isEnable){ 
+				isSensorEnable=data.getBooleanExtra("isSensorEnable", false);
+				if(isSensorEnable){ 
 					sensorThread=new Thread(new MouseSensorThread(this));
-					sensorThread.start();
-					isSensorEnable=true;
+					sensorThread.start();					
 					butCalibration.setVisibility(View.VISIBLE);
 					checkboxSensorPause.setVisibility(View.VISIBLE);
-				}else{
-					isSensorEnable=false;
+				}else{					
 					butCalibration.setVisibility(View.GONE);
 					checkboxSensorPause.setVisibility(View.GONE);
 				}
+				isMultiscreen=data.getBooleanExtra("isMultiscreen", false);
 				mouseSens=(float)data.getIntExtra("mouseSens", 50);
 				mouseSens/=50;
 			}
@@ -369,8 +369,7 @@ public class MainView extends Activity implements SensorEventListener {
 	}
 
 	int x, y,x2, y2;
-	int oldX = 0, oldY = 0;
-	int posX = 0, posY = 0;
+	int oldX = 200, oldY = 200;	//not in 0;0 corner
 	int tmpX, tmpY;
 	int difX, difY;
 	
@@ -391,7 +390,8 @@ public class MainView extends Activity implements SensorEventListener {
 		int index = MotionEventCompat.getActionIndex(event);	 
 		x = (int)(MotionEventCompat.getX(event, index)*mouseSens);
 		y = (int)(MotionEventCompat.getY(event, index)*mouseSens);	
-
+		 System.out.println(oldX+" "+oldY);
+		 
 			switch (action) {
 			case MotionEvent.ACTION_DOWN:
 				  touchDownMs = System.currentTimeMillis();
@@ -447,20 +447,25 @@ public class MainView extends Activity implements SensorEventListener {
 					break;
 				}else{
 					
-					x += difX;
-					y += difY;
-					tmpX = x;
-					tmpY = y;
+				
+					if (isMultiscreen||(x+difX>0 && y+difY>0) ){
+						x += difX;
+						y += difY;
+						tmpX = x;
+						tmpY = y;					
+						sendMessage("Mouse" + x + " " + y + "\n");
+					}
 					
-					sendMessage("Mouse" + x + " " + y + "\n");
 				}
 				break;
 			case MotionEvent.ACTION_UP:
 				if(tripleTap)tripleTap=false;
 				
 				sendMessage("RELEASE\n");
+				if (isMultiscreen||(oldX>0 && oldY>0) ){
 					oldX = tmpX;
 					oldY = tmpY;
+				}
 				break;
 			}	
 		return false;
@@ -514,6 +519,7 @@ public class MainView extends Activity implements SensorEventListener {
 		case R.id.action_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);
 			intent.putExtra("isSensorEnable", isSensorEnable);
+			intent.putExtra("isMultiscreen", isMultiscreen);
 			float fl=mouseSens*50;
 			intent.putExtra("mouseSens", fl);
 			startActivityForResult(intent, SETTINGS_STATE_REQUEST_CODE);

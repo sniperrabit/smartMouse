@@ -8,7 +8,7 @@ public class MouseSensorThread implements Runnable {
 	}
 	@Override
     public void run() {
-		int x=0,y=0;
+		int x=200,y=200;//not 0;0 in corner
 		float axisX,axisY;
    	
    		double range=0.7;
@@ -20,14 +20,13 @@ public class MouseSensorThread implements Runnable {
 		   		
 		   		if(axisX>range||axisX<-range||axisY>range||axisY<-range){
 	
-	//		   		x=mainView.x;
-	//		   		y=mainView.y;
-			   		x-=axisX;
-			   		y-=axisY;
-			
-			   		mainView.sendMessage("Mouse" + x + " " + y + "\n");
-	//		   		mainView.x=x;
-	//		   		mainView.y=y;
+		   			if (mainView.isMultiscreen||(x-axisX>0 && y-axisY>0) ){
+		   				x-=axisX;
+				   		y-=axisY;
+				   		System.out.println(x+" "+y);			   	 
+				   		mainView.sendMessage("Mouse" + x + " " + y + "\n");
+					}
+			   				   			
 			    	 try {
 						Thread.sleep(10);
 					} catch (InterruptedException e) {
