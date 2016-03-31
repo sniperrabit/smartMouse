@@ -13,68 +13,37 @@ public class WifiSocketServer implements Runnable {
 
 
 	String message = "";
-	ServerSocket serverSocket;
+	ServerSocket serverSocket;	
+	SimpleSPPServer simpleServer;
 	
-	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-//
-//
-//        ServerSocket serverSocket = null;
-//        try {
-//            serverSocket = new ServerSocket(4444);
-//            System.out.println(getIpAddress());
-//            System.out.println("I'm waiting here: "
-//					+ serverSocket.getLocalPort());
-//        } catch (IOException e) {
-//            System.err.println("Could not listen on port: 4444.");
-//            System.exit(1);
-//        }
-//
-//        Socket clientSocket = null;
-//        try {
-//            clientSocket = serverSocket.accept();
-//            System.err.println("accept");
-//        } catch (IOException e) {
-//            System.err.println("Accept failed.");
-//            System.exit(1);
-//        }
-//
-//   
-//        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-//        
-//        String inputLine;
-//
-//        while ((inputLine = in.readLine()) != null) {
-//        	System.out.println(inputLine);
-//        }
-//
-//       in.close();
-//        clientSocket.close();
-//        serverSocket.close();
-        
-        
-    }
+    public WifiSocketServer(SimpleSPPServer simpleServer) {
+    	this.simpleServer=simpleServer;
+	}
     
 	 public void run() {
 			System.out.println("\nRUN WIFI SERVER IN THREAD");
-	        
+			simpleServer.append("\nRUN WIFI SERVER IN THREAD");
 	        ServerSocket serverSocket = null;
 	        try {
 	            serverSocket = new ServerSocket(4444);
 	            System.out.println(getIpAddress());
-	            System.out.println("I'm waiting here: "
-						+ serverSocket.getLocalPort());
+	            simpleServer.append("\n"+getIpAddress());
+	            System.out.println("\nI'm waiting here: "+ serverSocket.getLocalPort());
+	        	simpleServer.append("\nI'm waiting here: "+ serverSocket.getLocalPort());
 	        } catch (IOException e) {
-	            System.err.println("Could not listen on port: 4444.");
+	            System.err.println("\nCould not listen on port: 4444.");
+	            simpleServer.append("\nCould not listen on port: 4444.");
 	            System.exit(1);
 	        }
 
 	        Socket clientSocket = null;
 	        try {
 	            clientSocket = serverSocket.accept();
-	            System.err.println("Connection Wifi ACCEPTED");
+	            System.err.println("\nConnection Wifi ACCEPTED");
+	            simpleServer.append("\nConnection Wifi ACCEPTED");
 	        } catch (IOException e) {
-	            System.err.println("Accept failed.");
+	            System.err.println("\nAccept failed.");
+	            simpleServer.append("\nAccept failed.");
 	            System.exit(1);
 	        }
 	        try {
@@ -86,7 +55,8 @@ public class WifiSocketServer implements Runnable {
 //					while ((inputLine = in.readLine()) != null) {
 //						System.out.println(inputLine);
 //					}
-				System.out.println("END CONNECTION WIFI");
+				System.out.println("\nEND CONNECTION WIFI");
+			     simpleServer.append("\nEND CONNECTION WIFI");
 		        in.close();
 		        clientSocket.close();
 		        serverSocket.close();
@@ -95,7 +65,7 @@ public class WifiSocketServer implements Runnable {
 				e.printStackTrace();
 			}
 	        
-	        (new Thread(new WifiSocketServer())).start();
+	        (new Thread(new WifiSocketServer(simpleServer))).start();
 	    }
     
     public static String getIpAddress() {
