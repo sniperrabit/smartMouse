@@ -10,12 +10,12 @@
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mause sensibility"
+        android:text="Touch mouse speed"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <SeekBar
-        android:id="@+id/seekBar1"
+        android:id="@+id/seekBarTouchMouse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -26,6 +26,19 @@
         android:layout_marginTop="20dp"
         android:onClick="changeSensorState"
         android:text="Gyroscope mouse" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gyro mouse speed"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <SeekBar
+        android:id="@+id/seekBarGyroMouse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <CheckBox
         android:id="@+id/multiscreen"
@@ -41,22 +54,23 @@
 
         <Button
             android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
+            android:layout_width="86dp"
+            android:layout_height="72dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
-            android:layout_weight="0.05"
-            android:text="Default" 
-            android:onClick="setDefaultValues"/>
+            android:layout_weight="0.02"
+            android:onClick="setDefaultValues"
+            android:text="Default"/>
 
         <Button
             android:id="@+id/buttonOK"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="20dp"
-            android:layout_weight="0.10"
-            android:text="OK" />
+            android:layout_weight="0.08"
+            android:lines="2"
+            android:text="Save" />
 
     </LinearLayout>
 

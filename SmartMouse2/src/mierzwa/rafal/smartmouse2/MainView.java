@@ -83,7 +83,7 @@ public class MainView extends Activity implements SensorEventListener {
 	private Button butEnter;
 	private Button butEsc;
 	private Button butCalibration;
-	private CheckBox checkboxSensorPause;
+	CheckBox checkboxSensorPause;
 	
 	private StringBuffer mOutStringBuffer;
 	// Local Bluetooth adapter
@@ -293,7 +293,8 @@ public class MainView extends Activity implements SensorEventListener {
 					showToastMessage("Server Error");
 				}
 			break;
-		case SETTINGS_STATE_REQUEST_CODE:	
+		case SETTINGS_STATE_REQUEST_CODE:
+			
 			if(resultCode == Activity.RESULT_OK) {
 				isSensorEnable=data.getBooleanExtra("isSensorEnable", false);
 				if(isSensorEnable){ 
@@ -306,8 +307,10 @@ public class MainView extends Activity implements SensorEventListener {
 					checkboxSensorPause.setVisibility(View.GONE);
 				}
 				isMultiscreen=data.getBooleanExtra("isMultiscreen", false);
-				mouseSens=(float)data.getIntExtra("mouseSens", 50);
-				mouseSens/=50;
+				mouseSensTouch=(float)data.getIntExtra("mouseSensTouch", 50);
+				mouseSensTouch/=50;
+				mouseSensGyro=(float)data.getIntExtra("mouseSensGyro", 50);
+				mouseSensGyro/=50;
 			}
 			
 			break;
@@ -379,7 +382,8 @@ public class MainView extends Activity implements SensorEventListener {
 	
     int xOldScroll;
 	int yOldScroll;
-    float mouseSens=1;
+    float mouseSensTouch=1;
+    float mouseSensGyro=1;
 	Handler handler = new Handler();
 	boolean tripleTap=false;
 
@@ -388,8 +392,8 @@ public class MainView extends Activity implements SensorEventListener {
 		int action = MotionEventCompat.getActionMasked(event);
 		
 		int index = MotionEventCompat.getActionIndex(event);	 
-		x = (int)(MotionEventCompat.getX(event, index)*mouseSens);
-		y = (int)(MotionEventCompat.getY(event, index)*mouseSens);	
+		x = (int)(MotionEventCompat.getX(event, index)*mouseSensTouch);
+		y = (int)(MotionEventCompat.getY(event, index)*mouseSensTouch);	
 		 System.out.println(oldX+" "+oldY);
 		 
 			switch (action) {
@@ -520,8 +524,14 @@ public class MainView extends Activity implements SensorEventListener {
 			Intent intent = new Intent(this, SettingsActivity.class);
 			intent.putExtra("isSensorEnable", isSensorEnable);
 			intent.putExtra("isMultiscreen", isMultiscreen);
-			float fl=mouseSens*50;
-			intent.putExtra("mouseSens", fl);
+			float fl=mouseSensTouch*50;
+			intent.putExtra("mouseSensTouch", fl);
+			float f2=mouseSensGyro*50;
+			intent.putExtra("mouseSensGyro", f2);
+			
+		
+			
+			
 			startActivityForResult(intent, SETTINGS_STATE_REQUEST_CODE);
 			return true;	
 		
@@ -822,7 +832,8 @@ public class MainView extends Activity implements SensorEventListener {
 			}
 		}
 	}
-
+	
+	
 	public void pauseSensor(View view){
 		 if(checkboxSensorPause.isChecked()){				
 			 isSensorPause=true;

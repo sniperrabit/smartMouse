@@ -67,14 +67,17 @@
 
         <CheckBox
             android:id="@+id/checkboxSensorPause"
-         	android:layout_width="wrap_content"
-          	android:layout_height="wrap_content"
-            android:layout_above="@+id/butCalibration"
-             android:visibility="gone"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="33dp"
-            android:text="Pause"
-             android:onClick="pauseSensor" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="29dp"
+            android:checked="true"
+            android:visibility="gone"
+            android:onClick="pauseSensor"
+            android:text="Pause" />
+
+      
 
     </RelativeLayout>
 

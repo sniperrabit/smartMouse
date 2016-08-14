@@ -15,17 +15,18 @@ import android.widget.TextView;
 
 public class SettingsActivity extends Activity {
 
-int defMouseSens=50;
+int defMouseSensTouch=50;
+int defMouseSensGyro=50;
 boolean defIsSensorEnable=false;
 boolean defIsMultiscreen=false;
 
 boolean isSensorEnable;
 boolean isMultiscreen;
-int mouseSens;
+int mouseSensTouch,mouseSensGyro;
 Button buttonOK;
 CheckBox checkBoxGyroscope;
 CheckBox checkBoxMultiscreen;
-SeekBar seekBar;
+SeekBar seekBarTouchMouse,seekBarGyroMouse;
 Intent returnIntent;
 
 
@@ -39,22 +40,29 @@ Intent returnIntent;
 		setContentView(R.layout.settings);
 		isSensorEnable=getIntent().getBooleanExtra("isSensorEnable", false);
 		isMultiscreen=getIntent().getBooleanExtra("isMultiscreen", false);
-		float fl=getIntent().getFloatExtra("mouseSens", 50);
-		mouseSens=Math.round(fl);
+		float fl=getIntent().getFloatExtra("mouseSensTouch", 50);
+		mouseSensTouch=Math.round(fl);
+		float f2=getIntent().getFloatExtra("mouseSensGyro", 50);
+		mouseSensGyro=Math.round(f2);
 		
 		checkBoxGyroscope = (CheckBox) findViewById(R.id.gyroscope);
 		checkBoxMultiscreen= (CheckBox) findViewById(R.id.multiscreen);
-		seekBar = (SeekBar) findViewById(R.id.seekBar1);
+		seekBarTouchMouse = (SeekBar) findViewById(R.id.seekBarTouchMouse);
+		seekBarGyroMouse = (SeekBar) findViewById(R.id.seekBarGyroMouse);
 		buttonOK = (Button) findViewById(R.id.buttonOK);
 		buttonOK.setOnClickListener(buttonClickListner);
 		
 		
 		checkBoxMultiscreen.setChecked(isMultiscreen);		
-		checkBoxGyroscope.setChecked(isSensorEnable);		
-		seekBar.setMax(1);
-		seekBar.setMax(250);
-		seekBar.setProgress(mouseSens);
+		checkBoxGyroscope.setChecked(isSensorEnable);	
 		
+		seekBarTouchMouse.setMax(1);
+		seekBarTouchMouse.setMax(250);
+		seekBarTouchMouse.setProgress(mouseSensTouch);
+		
+		seekBarGyroMouse.setMax(1);
+		seekBarGyroMouse.setMax(250);
+		seekBarGyroMouse.setProgress(mouseSensGyro);
 		 
 		returnIntent = new Intent();
 		
@@ -68,9 +76,10 @@ Intent returnIntent;
 			int buttonId = b.getId();
 			switch (buttonId) {
 			case R.id.buttonOK:	
-				 returnIntent.putExtra("isSensorEnable",isSensorEnable);		
-				 returnIntent.putExtra("isMultiscreen",isMultiscreen);
-				returnIntent.putExtra("mouseSens",seekBar.getProgress());
+				returnIntent.putExtra("isSensorEnable",isSensorEnable);		
+				returnIntent.putExtra("isMultiscreen",isMultiscreen);
+				returnIntent.putExtra("mouseSensTouch",seekBarTouchMouse.getProgress());
+				returnIntent.putExtra("mouseSensGyro",seekBarGyroMouse.getProgress());
 				setResult(Activity.RESULT_OK,returnIntent);
 				finish();
 				break;						
@@ -82,8 +91,11 @@ Intent returnIntent;
 	};
 	
 	public void setDefaultValues(View view){
-		mouseSens=defMouseSens;
-		seekBar.setProgress(defMouseSens);
+		mouseSensTouch=defMouseSensTouch;
+		seekBarTouchMouse.setProgress(defMouseSensTouch);
+		
+		mouseSensGyro=defMouseSensGyro;
+		seekBarGyroMouse.setProgress(defMouseSensGyro);
 		
 		isSensorEnable=defIsSensorEnable;
 		checkBoxGyroscope.setChecked(isSensorEnable);		

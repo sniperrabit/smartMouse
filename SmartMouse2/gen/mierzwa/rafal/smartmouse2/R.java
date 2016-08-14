@@ -156,8 +156,9 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f080026;
-        public static final int address=0x7f080021;
+        public static final int TextView01=0x7f08001f;
+        public static final int action_settings=0x7f080028;
+        public static final int address=0x7f080023;
         public static final int b_exit=0x7f080003;
         public static final int b_run_blue=0x7f080001;
         public static final int b_run_wifi=0x7f080002;
@@ -173,25 +174,26 @@ public final class R {
         public static final int butUpArrow=0x7f080012;
         public static final int button1=0x7f08000b;
         public static final int button2=0x7f08000c;
-        public static final int buttonOK=0x7f080020;
+        public static final int buttonOK=0x7f080022;
         public static final int button_scan=0x7f08000a;
         public static final int button_send=0x7f08001b;
         public static final int checkboxSensorPause=0x7f080010;
-        public static final int clear=0x7f080024;
-        public static final int connect=0x7f080023;
-        public static final int discoverable=0x7f080028;
+        public static final int clear=0x7f080026;
+        public static final int connect=0x7f080025;
+        public static final int discoverable=0x7f08002a;
         public static final int edit_text_out=0x7f08001a;
         public static final int gyroscope=0x7f08001e;
         public static final int imageView1=0x7f08000e;
-        public static final int multiscreen=0x7f08001f;
+        public static final int multiscreen=0x7f080021;
         public static final int new_devices=0x7f080009;
         public static final int paired_devices=0x7f080007;
-        public static final int port=0x7f080022;
+        public static final int port=0x7f080024;
         public static final int relativeLayout2=0x7f08000d;
-        public static final int response=0x7f080025;
-        public static final int scan=0x7f080027;
+        public static final int response=0x7f080027;
+        public static final int scan=0x7f080029;
         public static final int scrollView1=0x7f080000;
-        public static final int seekBar1=0x7f08001d;
+        public static final int seekBarGyroMouse=0x7f080020;
+        public static final int seekBarTouchMouse=0x7f08001d;
         public static final int textView1=0x7f08001c;
         public static final int title_left_text=0x7f080004;
         public static final int title_new_devices=0x7f080008;
